@@ -80,6 +80,21 @@ const OrderManagement = () => {
                         Mark as Delivered
                       </Button>
                       <Button
+                        variant="info"
+                        size="sm"
+                        className="me-2"
+                        onClick={() => handleStatusUpdate(order.id,
+                           "preparing",
+                           order.customerName, 
+                           order?.items?.reduce((acc,item)=>acc + (item.price*item.quantity),0),
+                           order?.items
+                          
+                          )}
+                        disabled={order.status === "preparing"}
+                      >
+                        Mark as Preparing
+                      </Button>
+                      <Button
                         variant="danger"
                         size="sm"
                         onClick={() => handleStatusUpdate(order.id,
