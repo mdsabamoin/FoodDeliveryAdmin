@@ -15,15 +15,12 @@ const Log = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(login({ email, password }))
-                 
-      if(user){
-        navigate("/categories");
-      }
-              
-      
+    dispatch(login({ email, password }))  
       
   };
+  if(user){
+    navigate("/categories");
+  }
 
   return (
     <div
