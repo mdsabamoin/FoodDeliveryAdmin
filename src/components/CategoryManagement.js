@@ -9,7 +9,8 @@ const CategoryManagement = () => {
 
   const [categoryName, setCategoryName] = useState("");
   const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null);
+  // const [preview, setPreview] = useState(null);
+  const [customImageUrl, setCustomImageUrl] = useState(""); // Added state for custom image URL
   const [editingId, setEditingId] = useState(null); // Track the category being edited
 
   // Fetch categories on component mount
@@ -18,42 +19,41 @@ const CategoryManagement = () => {
   }, [dispatch]);
 
   // Handle image upload and preview
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setPreview(URL.createObjectURL(file));
-    }
+
+  // Handle custom URL input
+  const handleCustomUrlChange = (e) => {
+    setCustomImageUrl(e.target.value); // Use custom URL as the preview
+    setImage(null); // Reset file upload if custom URL is provided
   };
 
   // Handle category submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!categoryName || (!image && !preview)) {
+    if (!categoryName || (!image && !customImageUrl)) {
       alert("Please provide a category name and an image.");
       return;
     }
 
     if (editingId) {
       // Update existing category
-      dispatch(updateCategory({ id: editingId, categoryName, preview }));
+      dispatch(updateCategory({ id: editingId, categoryName, customImageUrl }));
       setEditingId(null);
     } else {
       // Add new category
-      dispatch(createCategory({ categoryName, preview }));
+      dispatch(createCategory({ categoryName, customImageUrl }));
     }
 
     // Reset form fields
     setCategoryName("");
     setImage(null);
-    setPreview(null);
+    setCustomImageUrl(""); // Reset custom URL
   };
 
   // Populate fields for editing
   const handleEdit = (category) => {
     setCategoryName(category.categoryName);
-    setPreview(category.preview);
+    setCustomImageUrl(category.customImageUrl); // Clear custom URL input when editing
     setEditingId(category.id); // Set the ID of the category being edited
   };
 
@@ -86,13 +86,18 @@ const CategoryManagement = () => {
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group controlId="categoryImage">
-                <Form.Label>Category Image</Form.Label>
-                <Form.Control type="file" accept="image/*" onChange={handleImageUpload} />
+              <Form.Group controlId="customImageUrl" className="mt-2">
+                <Form.Label> Enter Image URL</Form.Label>
+                <Form.Control
+                  type="url"
+                  placeholder="Enter image URL"
+                  value={customImageUrl}
+                  onChange={handleCustomUrlChange}
+                />
               </Form.Group>
-              {preview && (
+              {customImageUrl && (
                 <div className="mt-2">
-                  <Image src={preview} alt="Preview" thumbnail width={100} height={100} />
+                  <Image src={customImageUrl} alt="Preview" thumbnail width={100} height={100} />
                 </div>
               )}
             </Col>
@@ -120,7 +125,7 @@ const CategoryManagement = () => {
             {categories.map((category) => (
               <ListGroup.Item key={category.id} className="d-flex align-items-center">
                 <Image
-                  src={category.preview}
+                  src={category.customImageUrl}
                   alt={category.categoryName}
                   rounded
                   width={50}

@@ -16,10 +16,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <div>{logNavbar}<Log/></div>,
   },
-  {
-    path: "/dashboard",
-    element: <div>{adminheader}<AdminDashboard/></div>,
-  },
+  // {
+  //   path: "/dashboard",
+  //   element: <div>{adminheader}<AdminDashboard/></div>,
+  // },
   {
     path: "/categories",
     element: <div>{adminheader}<CategoryManagement /></div>,

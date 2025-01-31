@@ -18,6 +18,8 @@ const Log = () => {
     dispatch(login({ email, password }))  
       
   };
+
+  
   if(user){
     navigate("/categories");
   }

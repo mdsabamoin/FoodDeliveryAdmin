@@ -78,19 +78,19 @@ export const fetchOrders = createAsyncThunk(
 // Create a new category
 export const createCategory = createAsyncThunk(
   'admin/createCategory',
-  async ({ categoryName, preview }, { rejectWithValue }) => {
+  async ({ categoryName, customImageUrl }, { rejectWithValue }) => {
     try {
       // Post the category data to Firebase
       const response = await axios.post(`${API_URL}/categories.json`, {
         categoryName,
-        preview,
+        customImageUrl,
       });
 
       // Firebase returns an object with a unique `name` field as the generated ID
       const id = response.data.name;
 
       // Combine the `id` and the posted object into one
-      return { id, categoryName, preview };
+      return { id, categoryName, customImageUrl };
     } catch (error) {
       // Use rejectWithValue to pass error details to the rejected action
       return rejectWithValue(error.response?.data || 'Failed to upload data and images');
@@ -100,16 +100,16 @@ export const createCategory = createAsyncThunk(
 
 export const updateCategory = createAsyncThunk(
   'admin/updateCategory',
-  async ({ id, categoryName, preview }, { rejectWithValue }) => {
+  async ({ id, categoryName, customImageUrl }, { rejectWithValue }) => {
     try {
       // Update the category data in Firebase
       await axios.put(`${API_URL}/categories/${id}.json`, {
         categoryName,
-        preview,
+        customImageUrl,
       });
 
       // Return the updated data along with the ID
-      return { id, categoryName, preview };
+      return { id, categoryName, customImageUrl };
     } catch (error) {
       // Use rejectWithValue to pass error details to the rejected action
       return rejectWithValue(error.response?.data || 'Failed to update category');
@@ -122,13 +122,13 @@ export const updateCategory = createAsyncThunk(
 
 // Create a new recipe
 export const createRecipe = createAsyncThunk('admin/createRecipe',
-   async ({recipeName,selectedCategory,ingredients,price,preview},{ rejectWithValue }) => {
+   async ({recipeName,selectedCategory,ingredients,price,customImageUrl},{ rejectWithValue }) => {
 
     try{
       const response = await axios.post(`${API_URL}/recipes.json`,
-         {recipeName,selectedCategory,ingredients,price,preview});
+         {recipeName,selectedCategory,ingredients,price,customImageUrl});
          const id = response.data.name;
-         return { id, recipeName, selectedCategory, ingredients, price, preview };
+         return { id, recipeName, selectedCategory, ingredients, price, customImageUrl };
 
     }catch(error){
       return rejectWithValue(error.response?.data || 'Failed to upload data and images');
@@ -138,7 +138,7 @@ export const createRecipe = createAsyncThunk('admin/createRecipe',
 
 export const updateRecipe = createAsyncThunk(
   'admin/updateRecipe',
-  async ({ id, recipeName, selectedCategory, ingredients, price, preview }, { rejectWithValue }) => {
+  async ({ id, recipeName, selectedCategory, ingredients, price, customImageUrl }, { rejectWithValue }) => {
     try {
       // Update recipe details in Firebase
       const response = await axios.put(`${API_URL}/recipes/${id}.json`, {
@@ -146,12 +146,12 @@ export const updateRecipe = createAsyncThunk(
         selectedCategory,
         ingredients,
         price,
-        preview,
+        customImageUrl,
       });
       
       // Return updated recipe details
       if(response.data){
-        return { id, recipeName, selectedCategory, ingredients, price, preview };
+        return { id, recipeName, selectedCategory, ingredients, price, customImageUrl };
       }
       
     } catch (error) {
@@ -197,13 +197,13 @@ export const deleteRecipe = createAsyncThunk(
 // Update order status
 export const updateOrderStatus = createAsyncThunk(
   'admin/updateOrderStatus',
-  async ({ orderId, status,customerName,totalprice,items }, { rejectWithValue }) => {
+  async ({ orderId, status,customerName,totalprice,items,address,paymentMethod }, { rejectWithValue }) => {
     try {
       // Update the order status in Firebase
-      const response = await axios.put(`${API_URL}/orders/${orderId}.json`, { orderId, status,customerName,totalprice,items });
+      const response = await axios.put(`${API_URL}/orders/${orderId}.json`, { orderId, status,customerName,totalprice,items ,address,paymentMethod});
 
       // Return the updated order data
-      return { orderId, status,customerName,totalprice,items };
+      return { orderId, status,customerName,totalprice,items,address,paymentMethod };
     } catch (error) {
       // Use rejectWithValue to pass error details to the rejected action
       return rejectWithValue(error.response?.data || 'Failed to update order status');

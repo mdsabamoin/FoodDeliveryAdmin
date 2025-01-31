@@ -14,8 +14,8 @@ const OrderManagement = () => {
   }, [dispatch]);
 
   // Update order status
-  const handleStatusUpdate = (orderId, status,customerName,totalprice,items) => {
-    dispatch(updateOrderStatus({ orderId, status,customerName,totalprice,items }));
+  const handleStatusUpdate = (orderId, status,customerName,totalprice,items,address, paymentMethod) => {
+    dispatch(updateOrderStatus({ orderId, status,customerName,totalprice,items, address, paymentMethod}));
   };
 
   // Open modal to view order details
@@ -72,7 +72,9 @@ const OrderManagement = () => {
                            "delivered",
                            order.customerName, 
                            order?.items?.reduce((acc,item)=>acc + (item.price*item.quantity),0),
-                           order?.items
+                           order?.items,
+                           order?.address,
+                           order?.paymentMethod
                           
                           )}
                         disabled={order.status === "delivered"}
@@ -87,7 +89,9 @@ const OrderManagement = () => {
                            "preparing",
                            order.customerName, 
                            order?.items?.reduce((acc,item)=>acc + (item.price*item.quantity),0),
-                           order?.items
+                           order?.items,
+                           order?.address,
+                           order?.paymentMethod
                           
                           )}
                         disabled={order.status === "preparing"}
@@ -101,7 +105,9 @@ const OrderManagement = () => {
                            "failed",
                             order.customerName,
                             order?.items?.reduce((acc,item)=>acc + (item.price*item.quantity),0),
-                            order?.items
+                            order?.items,
+                            order?.address,
+                            order?.paymentMethod
                           
                           )}
                         disabled={order.status === "failed"}
@@ -130,11 +136,13 @@ const OrderManagement = () => {
             <p><strong>Order ID:</strong> {selectedOrder.id}</p>
             <p><strong>Total Price:</strong> {selectedOrder?.items?.reduce((acc,item)=>acc + (item.price*item.quantity),0)}</p>
             <p><strong>Status:</strong> {selectedOrder.status}</p>
+            <p><strong>Address:</strong> {selectedOrder.address}</p>
+            <p><strong>Payment Method:</strong> {selectedOrder.paymentMethod}</p>
             <h5>Items:</h5>
             <ul>
               {selectedOrder?.items?.map((item, index) => (
                 <li key={index}>
-                  {item.name} - {item.price} x {item.quantity} --- {item.price*item.quantity}
+                  {item.recipeName} - {item.price} x {item.quantity} --- {item.price*item.quantity}
                 </li>
               ))}
             </ul>

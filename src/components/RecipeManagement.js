@@ -12,41 +12,33 @@ const RecipeManagement = () => {
   const [ingredients, setIngredients] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null);
   const [editingId, setEditingId] = useState(null); // Track the recipe being edited
-
-  const categories = ["Appetizers", "Main Courses", "Desserts"]; // Predefined categories
+  const [customImageUrl, setCustomImageUrl] = useState("");
+  const categories = ["Appetizers", "Main Courses", "Desserts","Rolls","Starter"]; // Predefined categories
 
   // Fetch existing categories or recipes if necessary
   useEffect(() => {
     dispatch(fetchRecipes());
   }, [dispatch]);
 
-  // Handle image upload and preview
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setPreview(URL.createObjectURL(file));
-    }
-  };
+  
 
   // Handle recipe submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!recipeName || !selectedCategory || !ingredients || !price || (!image && !preview)) {
+    if (!recipeName || !selectedCategory || !ingredients || !price || (!image && !customImageUrl)) {
       alert("Please provide all the fields.");
       return;
     }
 
     if (editingId) {
       // Update existing recipe
-      dispatch(updateRecipe({ id: editingId, recipeName, selectedCategory, ingredients, price, preview }));
+      dispatch(updateRecipe({ id: editingId, recipeName, selectedCategory, ingredients, price, customImageUrl }));
       setEditingId(null);
     } else {
       // Add new recipe
-      dispatch(createRecipe({ recipeName, selectedCategory, ingredients, price, preview }));
+      dispatch(createRecipe({ recipeName, selectedCategory, ingredients, price, customImageUrl }));
     }
 
     // Reset form fields
@@ -55,7 +47,7 @@ const RecipeManagement = () => {
     setIngredients("");
     setPrice("");
     setImage(null);
-    setPreview(null);
+    setCustomImageUrl(null);
   };
 
   // Populate fields for editing
@@ -64,7 +56,7 @@ const RecipeManagement = () => {
     setSelectedCategory(recipe.selectedCategory);
     setIngredients(recipe.ingredients);
     setPrice(recipe.price);
-    setPreview(recipe.preview);
+    setCustomImageUrl(recipe.customImageUrl);
     setEditingId(recipe.id); // Set the ID of the recipe being edited
   };
 
@@ -140,16 +132,15 @@ const RecipeManagement = () => {
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="recipeImage">
-                <Form.Label>Recipe Image</Form.Label>
+                <Form.Label>Recipe Image Url</Form.Label>
                 <Form.Control
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
+                  type="url"
+                  onChange={(e)=>setCustomImageUrl(e.target.value)}
                 />
               </Form.Group>
-              {preview && (
+              {customImageUrl && (
                 <div className="mt-2">
-                  <Image src={preview} alt="Preview" thumbnail width={100} height={100} />
+                  <Image src={customImageUrl} alt="Preview" thumbnail width={100} height={100} />
                 </div>
               )}
             </Col>
@@ -169,7 +160,7 @@ const RecipeManagement = () => {
             {recipes.map((recipe) => (
               <ListGroup.Item key={recipe.id} className="d-flex align-items-center">
                 <Image
-                  src={recipe.preview}
+                  src={recipe.customImageUrl}
                   alt={recipe.name}
                   rounded
                   width={50}
